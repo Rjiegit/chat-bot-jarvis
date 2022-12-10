@@ -1,4 +1,5 @@
 import axios from "axios";
+import {CHAT_GPT_CONFIG} from '../config'
 
 interface Completions {
     model: string
@@ -10,7 +11,7 @@ interface Completions {
 const url = 'https://api.openai.com/v1/completions';
 
 export async function getChatResult(question: string) {
-    const chatGPTToken = process.env.CHAT_GPT_TOKEN
+    const chatGPTToken = CHAT_GPT_CONFIG.TOKEN
 
     const data: Completions = {
         max_tokens: 1000,
