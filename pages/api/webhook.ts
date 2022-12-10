@@ -7,7 +7,7 @@ import {
     MessageAPIResponseBase
 } from '@line/bot-sdk';
 import {LINE_CONFIG} from '../../config'
-import {getChatResult} from "../../ChatGPT/ChatGPT";
+import {getChatResult} from "../../chat/chat";
 
 const clientConfig: ClientConfig = {
     channelAccessToken: LINE_CONFIG.CHANNEL_ACCESS_TOKEN,
@@ -31,7 +31,7 @@ async function textEventHandler(event: WebhookEvent): Promise<MessageAPIResponse
     // Create a new message.
     const response: TextMessage = {
         type: 'text',
-        text: result.data.data.choices[0].text,
+        text: result.data.choices[0].text,
     };
 
     // Reply to the user.

@@ -21,17 +21,13 @@ interface Usage {
     total_tokens: number;
 }
 
-interface Data {
+interface ChatGPTResponse {
     id: string;
     object: string;
     created: number;
     model: string;
     choices: Choice[];
     usage: Usage;
-}
-
-interface Response {
-    data: Data;
 }
 
 const url = 'https://api.openai.com/v1/completions';
@@ -46,7 +42,7 @@ export async function getChatResult(question: string) {
         temperature: 0,
     }
 
-    return await axios.post<Response>(url, data, {
+    return await axios.post<ChatGPTResponse>(url, data, {
         headers: {
             Authorization: `Bearer ${chatGPTToken}`
         }
