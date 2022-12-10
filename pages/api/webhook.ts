@@ -4,7 +4,8 @@ import {
     Client,
     WebhookEvent,
     TextMessage,
-    MessageAPIResponseBase
+    MessageAPIResponseBase,
+    validateSignature, SignatureValidationFailed
 } from '@line/bot-sdk';
 import {LINE_CONFIG} from '../../config'
 import {getChatResult} from "../../chat/chat";
@@ -43,27 +44,38 @@ export default async function handler(
     res: NextApiResponse
 ) {
 
+    try {
+        validateSignature(req.body, LINE_CONFIG.CHANNEL_SECRET, LINE_CONFIG.CHANNEL_ACCESS_TOKEN)
+    } catch (error) {
+        console.error(error);
+        if (error instanceof SignatureValidationFailed) {
+            return res.status(401).json({message: error.message})
+        }
+        return res.status(500).json({
+            message: 'error',
+        });
+    }
     const events: WebhookEvent[] = req.body.events;
 
     const results = await Promise.all(
         events.map(async (event: WebhookEvent) => {
             try {
                 await textEventHandler(event);
-            } catch (err: unknown) {
-                if (err instanceof Error) {
-                    console.error(err);
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    console.error(error);
                 }
 
                 // Return an error message.
                 return res.status(500).json({
-                    status: 'error',
+                    message: 'error',
                 });
             }
         })
     );
 
     return res.status(200).json({
-        status: 'success',
+        message: 'success',
         results,
     });
 }
