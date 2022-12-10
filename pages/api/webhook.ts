@@ -31,7 +31,7 @@ async function textEventHandler(event: WebhookEvent): Promise<MessageAPIResponse
     // Create a new message.
     const response: TextMessage = {
         type: 'text',
-        text: result.data.choices[0].text,
+        text: result.data.choices[0].text.trim(),
     };
 
     // Reply to the user.
